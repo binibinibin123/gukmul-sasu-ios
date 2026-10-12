@@ -1,0 +1,106 @@
+name: iOS App Store build
+
+# Builds the Godot-exported Xcode project of 국물 사수! / Hold the Broth!, signs it with
+# App Store Connect API-key cloud signing and uploads it to App Store Connect (TestFlight).
+# Manual trigger only. Needs repository secrets ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8.
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: "Upload the build to App Store Connect"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  ios:
+    runs-on: macos-15
+    timeout-minutes: 60
+    env:
+      GODOT_VERSION: "4.7.2"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot iOS libraries
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: godot-ios
+          key: godot-ios-${{ env.GODOT_VERSION }}
+
+      - name: Download Godot iOS libraries
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          curl -fsSL -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          unzip -q -j templates.tpz templates/ios.zip
+          rm templates.tpz
+          mkdir godot-ios
+          unzip -q ios.zip "libgodot.ios.release.xcframework/*" "MoltenVK.xcframework/*" -d godot-ios
+          rm ios.zip
+
+      - name: Put the engine next to the project
+        run: |
+          set -euo pipefail
+          rm -rf GukmulSasu.xcframework MoltenVK.xcframework
+          cp -R godot-ios/libgodot.ios.release.xcframework GukmulSasu.xcframework
+          cp -R godot-ios/MoltenVK.xcframework MoltenVK.xcframework
+          ls -la
+
+      - name: App Store Connect API key
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/keys"
+          printf '%s\n' "$ASC_KEY_P8" > "$RUNNER_TEMP/keys/AuthKey_${ASC_KEY_ID}.p8"
+
+      - name: Archive (automatic cloud signing)
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          set -euo pipefail
+          BUILD_NUMBER=$(( ${{ github.run_number }} + 1 ))
+          xcodebuild -project GukmulSasu.xcodeproj -scheme GukmulSasu -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath "$RUNNER_TEMP/GukmulSasu.xcarchive" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$RUNNER_TEMP/keys/AuthKey_${ASC_KEY_ID}.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
+            -quiet archive
+
+      - name: Export and upload to App Store Connect
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          set -euo pipefail
+          DEST=export
+          if [ "${{ inputs.upload }}" = "true" ]; then DEST=upload; fi
+          cat > ExportOptions.plist <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>${DEST}</string>
+            <key>teamID</key><string>64W68UP975</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>uploadSymbols</key><true/>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict></plist>
+          PLIST
+          xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/GukmulSasu.xcarchive" \
+            -exportOptionsPlist ExportOptions.plist -exportPath "$RUNNER_TEMP/export" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$RUNNER_TEMP/keys/AuthKey_${ASC_KEY_ID}.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+          ls -la "$RUNNER_TEMP/export" || true
+
+      - name: Remove key
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/keys"

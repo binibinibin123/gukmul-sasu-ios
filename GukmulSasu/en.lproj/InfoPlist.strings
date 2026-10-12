@@ -1,0 +1,6 @@
+/* Localized versions of Info.plist keys */
+
+CFBundleDisplayName = "Hold the Broth!";
+NSCameraUsageDescription = "This game does not use the camera.";
+NSMicrophoneUsageDescription = "This game does not use the microphone.";
+NSPhotoLibraryUsageDescription = "This game does not access your photos.";
