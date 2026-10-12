@@ -17,12 +17,20 @@ permissions:
 
 jobs:
   ios:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 60
     env:
       GODOT_VERSION: "4.7.2"
     steps:
       - uses: actions/checkout@v4
+
+      - name: Use the newest Xcode 26 (the Godot 4.7 iOS engine is built against the iOS 26 SDK)
+        run: |
+          set -euo pipefail
+          ls -d /Applications/Xcode*.app
+          X=$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1)
+          sudo xcode-select -s "$X/Contents/Developer"
+          xcodebuild -version
 
       - name: Cache Godot iOS libraries
         id: cache
