@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AD0000000000000000000003 /* PoingGodotAdMobDeps in Frameworks */ = {isa = PBXBuildFile; productRef = AD0000000000000000000002 /* PoingGodotAdMobDeps */; };
+
 		1F1575721F582BE20003B888 /* dylibs in Resources */ = {isa = PBXBuildFile; fileRef = 1F1575711F582BE20003B888 /* dylibs */; };
 		DEADBEEF2F582BE20003B888 /* GukmulSasu.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEADBEEF1F582BE20003B888 /* GukmulSasu.xcframework */; };
 		
@@ -54,17 +56,30 @@ D0BCFE4518AEBDA2004A0001 /* ja */ = {isa = PBXFileReference; lastKnownFileType =
 		90DD2D9D24B36E8000717FE1 = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-		
+		589384010000000000000001 = {isa = PBXBuildFile; fileRef = 589384010000000000000002; };
+589384010000000000000002 = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = "poing-godot-admob-ads.release.xcframework"; path = "GukmulSasu/dylibs/addons/admob/ios/bin/ads/libs/poing-godot-admob-ads.release.xcframework"; sourceTree = "<group>"; };
+589384010000000000000003 = {isa = PBXBuildFile; fileRef = 589384010000000000000004; };
+589384010000000000000004 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppTrackingTransparency.framework"; path = "AppTrackingTransparency.framework"; sourceTree = "<group>"; };
+589384010000000000000005 = {isa = PBXBuildFile; fileRef = 589384010000000000000006; };
+589384010000000000000006 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "JavaScriptCore.framework"; path = "JavaScriptCore.framework"; sourceTree = "<group>"; };
+589384010000000000000007 = {isa = PBXBuildFile; fileRef = 589384010000000000000008; };
+589384010000000000000008 = {isa = PBXFileReference; lastKnownFileType = file; name = "GADTMediumTemplateView.xib"; path = "GukmulSasu/addons/admob/ios/bin/ads/res/GADTMediumTemplateView.xib"; sourceTree = "<group>"; };
+589384010000000000000009 = {isa = PBXBuildFile; fileRef = 58938401000000000000000A; };
+58938401000000000000000A = {isa = PBXFileReference; lastKnownFileType = file; name = "GADTSmallTemplateView.xib"; path = "GukmulSasu/addons/admob/ios/bin/ads/res/GADTSmallTemplateView.xib"; sourceTree = "<group>"; };
+
 
 /* Begin PBXFrameworksBuildPhase section */
 		D0BCFE3118AEBDA2004A7AAE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD0000000000000000000003 /* PoingGodotAdMobDeps in Frameworks */,
                 9039D3BE24C093AC0020482C /* MoltenVK.xcframework in Frameworks */,
 				DEADBEEF2F582BE20003B888 /* GukmulSasu.xcframework */,
 				
-				
+				589384010000000000000001,
+589384010000000000000003,
+589384010000000000000005
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,7 +95,8 @@ D0BCFE4518AEBDA2004A0001 /* ja */ = {isa = PBXFileReference; lastKnownFileType =
 				D0BCFE3618AEBDA2004A7AAE /* Frameworks */,
 				D0BCFE3518AEBDA2004A7AAE /* Products */,
 				F965960C2BC2C3A800579C7E /* PrivacyInfo.xcprivacy */,
-				
+				589384010000000000000008,
+58938401000000000000000A
 			);
 			sourceTree = "<group>";
 		};
@@ -98,7 +114,9 @@ D0BCFE4518AEBDA2004A0001 /* ja */ = {isa = PBXFileReference; lastKnownFileType =
                 9039D3BD24C093AC0020482C /* MoltenVK.xcframework */,
 				DEADBEEF1F582BE20003B888 /* GukmulSasu.xcframework */,
 				
-				
+				589384010000000000000002,
+589384010000000000000004,
+589384010000000000000006
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -128,6 +146,21 @@ D0BCFE4518AEBDA2004A0001 /* ja */ = {isa = PBXFileReference; lastKnownFileType =
 		};
 /* End PBXGroup section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		AD0000000000000000000001 /* XCLocalSwiftPackageReference "admob_spm" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "admob_spm";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AD0000000000000000000002 /* PoingGodotAdMobDeps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AD0000000000000000000001 /* XCLocalSwiftPackageReference "admob_spm" */;
+			productName = "PoingGodotAdMobDeps";
+		};
+/* End XCSwiftPackageProductDependency section */
+
 /* Begin PBXNativeTarget section */
 		D0BCFE3318AEBDA2004A7AAE /* GukmulSasu */ = {
 			isa = PBXNativeTarget;
@@ -137,6 +170,9 @@ D0BCFE4518AEBDA2004A0001 /* ja */ = {isa = PBXFileReference; lastKnownFileType =
 				D0BCFE3118AEBDA2004A7AAE /* Frameworks */,
 				D0BCFE3218AEBDA2004A7AAE /* Resources */,
 				90A13CD024AA68E500E8464F /* Embed Frameworks */,
+			);
+			packageProductDependencies = (
+				AD0000000000000000000002 /* PoingGodotAdMobDeps */,
 			);
 			buildRules = (
 			);
@@ -174,6 +210,9 @@ D0BCFE4518AEBDA2004A0001 /* ja */ = {isa = PBXFileReference; lastKnownFileType =
 				Base,
 			);
 			mainGroup = D0BCFE2B18AEBDA2004A7AAE;
+			packageReferences = (
+				AD0000000000000000000001 /* XCLocalSwiftPackageReference "admob_spm" */,
+			);
 			productRefGroup = D0BCFE3518AEBDA2004A7AAE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -193,7 +232,8 @@ D0BCFE4518AEBDA2004A0001 /* ja */ = {isa = PBXFileReference; lastKnownFileType =
 				90DD2D9E24B36E8000717FE1 /* Launch Screen.storyboard in Resources */,
 				D0BCFE4618AEBDA2004A7AAE /* InfoPlist.strings in Resources */,
 				F965960D2BC2C3A800579C7E /* PrivacyInfo.xcprivacy in Resources */,
-				
+				589384010000000000000007,
+589384010000000000000009
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,7 +305,7 @@ D0BCFE4518AEBDA2004A0001 /* ja */,
 				"LD_CLASSIC_1500" = "-ld_classic";
 				"LD_CLASSIC_1501" = "-ld_classic";
 				"LD_CLASSIC_1510" = "-ld_classic";
-				OTHER_LDFLAGS = "$(LD_CLASSIC_$(XCODE_VERSION_ACTUAL))  ";
+				OTHER_LDFLAGS = "$(LD_CLASSIC_$(XCODE_VERSION_ACTUAL)) -ObjC -framework JavaScriptCore ";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1";
 			};
@@ -306,7 +346,7 @@ D0BCFE4518AEBDA2004A0001 /* ja */,
 				"LD_CLASSIC_1500" = "-ld_classic";
 				"LD_CLASSIC_1501" = "-ld_classic";
 				"LD_CLASSIC_1510" = "-ld_classic";
-				OTHER_LDFLAGS = "$(LD_CLASSIC_$(XCODE_VERSION_ACTUAL))  ";
+				OTHER_LDFLAGS = "$(LD_CLASSIC_$(XCODE_VERSION_ACTUAL)) -ObjC -framework JavaScriptCore ";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1";
 				VALIDATE_PRODUCT = YES;

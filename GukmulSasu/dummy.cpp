@@ -29,6 +29,30 @@
 /**************************************************************************/
 
 
+extern void register_poing_godot_admob_ads_types();
+extern void unregister_poing_godot_admob_ads_types();
+
+
+void godot_apple_embedded_plugins_initialize() {{
+	register_poing_godot_admob_ads_types();
+
+    extern void godot_apple_embedded_plugins_initialize_admob();
+    godot_apple_embedded_plugins_initialize_admob();
+}}
+
+void godot_apple_embedded_plugins_deinitialize() {{
+	unregister_poing_godot_admob_ads_types();
+
+    extern void godot_apple_embedded_plugins_deinitialize_admob();
+    godot_apple_embedded_plugins_deinitialize_admob();
+}}
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmacro-redefined"
+#define godot_apple_embedded_plugins_initialize godot_apple_embedded_plugins_initialize_admob
+#define godot_apple_embedded_plugins_deinitialize godot_apple_embedded_plugins_deinitialize_admob
+#pragma clang diagnostic pop
+
 // Godot Plugins
 void godot_apple_embedded_plugins_initialize();
 void godot_apple_embedded_plugins_deinitialize();
