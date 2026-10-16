@@ -83,13 +83,16 @@ jobs:
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
             -quiet archive
 
-      - name: Inspect embedded framework signatures (archive)
+      - name: Drop placeholder signatures of embedded frameworks
+        # the unsigned archive gives SDK frameworks an ad-hoc signature with a bogus identifier;
+        # export then keeps that designated requirement and App Store rejects the upload
         run: |
-          set +e
+          set -euo pipefail
           APP="$RUNNER_TEMP/GukmulSasu.xcarchive/Products/Applications/GukmulSasu.app"
-          ls -la "$APP/Frameworks" || true
-          for f in "$APP"/Frameworks/*.framework; do echo "== $f"; codesign -dvv "$f" 2>&1 | head -8; done
-          ls "$RUNNER_TEMP/GukmulSasu.xcarchive" "$RUNNER_TEMP/GukmulSasu.xcarchive/Signatures" 2>/dev/null
+          for f in "$APP"/Frameworks/*.framework; do
+            codesign --remove-signature "$f"
+            echo "unsigned $f"
+          done
 
       - name: Export and upload to App Store Connect
         env:
@@ -119,7 +122,7 @@ jobs:
           ls -la "$RUNNER_TEMP/export" || true
           if [ -f "$RUNNER_TEMP/export/GukmulSasu.ipa" ]; then
             cd "$RUNNER_TEMP" && unzip -q -o export/GukmulSasu.ipa -d ipa
-            for f in ipa/Payload/GukmulSasu.app/Frameworks/*.framework; do echo "== $f"; codesign -dvv "$f" 2>&1 | head -8; codesign --verify --strict -v "$f" 2>&1 | tail -2; done
+            for f in ipa/Payload/GukmulSasu.app/Frameworks/*.framework; do echo "== $f"; codesign --verify --strict -v "$f" 2>&1 | tail -2; done
           fi
 
       - name: Remove key
